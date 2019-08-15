@@ -1,4 +1,4 @@
-﻿# 航空公司客户价值分析
+航空公司客户价值分析
 
 标签： 聚类分析
 
@@ -45,19 +45,38 @@ avg_discount：平均折扣率
 
 ### 3.2数据预处理
 * 分析是否有空值，若有空值数据较少，针对现有样本可对有空值数据进行剔除
+
 * 'FFP_DATE','LOAD_TIME'属性均为object，将其进行转换得到指标
-L=FFP_DATE-LOAD_TIME
-其他属性则对应指标
-R=LAST_TO_END
-F=FLIGHT_COUNT
-M=SEG_KM_SUM
-C=AVG_DISCOUNT
+  L=FFP_DATE-LOAD_TIME
+  其他属性则对应指标
+  R=LAST_TO_END
+  F=FLIGHT_COUNT
+  M=SEG_KM_SUM
+  C=AVG_DISCOUNT
+
 * 对各属性数据做归一化
+
+* ```
+  data_clean=data.copy()
+  data_clean.loc[0:,'FFP_DATE']=pd.to_datetime(data['FFP_DATE'])
+  data_clean.loc[0:,'LOAD_TIME']=pd.to_datetime(data['LOAD_TIME'])
+  
+  data_clean['L']=data_clean.apply(lambda x: x['LOAD_TIME']-x['FFP_DATE'] ,axis=1)
+  data_clean['L'].map(lambda x:x.days)
+  data_clean=data_clean.drop(['FFP_DATE','LOAD_TIME'],axis=1)##必须有axis=1
+  data_clean.columns=['R','F','M','C','L']
+  data_clean_norm=(data_clean-data_clean.mean())/(data_clean.std())
+  data_clean_norm.head(20)
+  
+  data_clean_norm=data_clean_norm.apply(lambda x: x.astype('float64'))
+  ```
+
+  
 
 ----------
 ## 4.数据建模
 
-* 因通过手肘法判断K值时图像显示不明显
+* 
 
 ```python
 from sklearn.cluster import KMeans
@@ -74,7 +93,8 @@ plt.ylabel('SSE')
 plt.xlabel('x')
 ```
 
-* 故使用Gap Statistic方法计算得出最佳K值  ，但由于类别较多带来营销成本上升，故按照“重点保持客户”、“重点发展客户”、“重点挽留客户”、“低价值客户”4类进行分析
+* ![](E:\Data Analyse\Python Course\Practice\航空公司客户价值分析\手肘法.png)
+* 因通过手肘法判断K值时图像显示不明显，故使用Gap Statistic方法计算得出最佳K值  ，但由于类别较多带来营销成本上升，故按照“重点保持客户”、“重点发展客户”、“重点挽留客户”、“低价值客户”4类进行分析
 ```python
 import numpy as np
 from sklearn.cluster import KMeans
@@ -95,6 +115,27 @@ def gap(data,nrefs=20,maxclusters=15):
 gap(data_clean_norm,maxclusters=15)
 ```
 
+```
+(14,    clusterCount           gap
+ 0             1  0.000000e+00
+ 1             2  1.030713e-07
+ 2             3 -1.355463e-07
+ 3             4  8.311523e-07
+ 4             5 -1.510638e-05
+ 5             6  6.294325e-07
+ 6             7 -7.101845e-07
+ 7             8 -2.484698e-04
+ 8             9  3.893843e-04
+ 9            10  3.112604e-06
+ 10           11  5.853758e-04
+ 11           12  1.109385e-06
+ 12           13  3.602633e-05
+ 13           14  7.733212e-04
+ 14           15  8.796191e-05)
+```
+
+***通过观察可发现，聚类中心为4时效果与聚类中心为14时相近，为减少运营成本，将聚类中心定为4***
+
 * 4类客户特征如下：
 重点保持客户：R小，F、M、C大，是价值最高的客户
 重点发展客户：R、F、M、L小，但C大，是公司的潜在价值客户
@@ -109,6 +150,6 @@ gap(data_clean_norm,maxclusters=15)
 * 针对重点挽留客户，可与其他企业合作，采用交叉销售的方法，让此类客户在本公司合作伙伴上消费时对机票进行相应的折扣以吸引客户
 
 ----------
-##  6.小结
+## 6.小结
 
 针对传统FRM模型的不足，采用K-Means算法进行分析，挖掘出4类用户，针对4类用户进行不同的营销方案。
