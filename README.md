@@ -76,8 +76,6 @@ avg_discount：平均折扣率
 ----------
 ## 4.数据建模
 
-* 
-
 ```python
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
@@ -93,7 +91,7 @@ plt.ylabel('SSE')
 plt.xlabel('x')
 ```
 
-* ![](E:\Data Analyse\Python Course\Practice\航空公司客户价值分析\手肘法.png)
+* ![](README\手肘法.png)
 * 因通过手肘法判断K值时图像显示不明显，故使用Gap Statistic方法计算得出最佳K值  ，但由于类别较多带来营销成本上升，故按照“重点保持客户”、“重点发展客户”、“重点挽留客户”、“低价值客户”4类进行分析
 ```python
 import numpy as np
