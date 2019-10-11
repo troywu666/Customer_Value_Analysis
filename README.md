@@ -1,4 +1,4 @@
-**航空公司客户价值分析**
+# 航空公司客户价值分析
 
 标签： 聚类分析
 
@@ -6,7 +6,8 @@
 
 ---
 
-## 1.背景和目标
+## 1. 背景和目标
+
 背景：
 
 通过客户分类，可区分无价值客户和高价值客户，企业针对不同价值客户定制个性化服务方案，可将有限资源集中高价值客户，实现企业利润最大化。
@@ -35,25 +36,26 @@ e=>end: End
 
 st->io1->io2->op->e
 ```
-### 3.1数据抽取及预处理
+### 3.1、数据抽取及预处理
+
 * 按LRFMC模型从数据集取出相关属性数据：'FFP_DATE','LOAD_TIME','LAST_TO_END','FLIGHT_COUNT','SEG_KM_SUM','avg_discount'
 * 数据属性说明：
-FFP_DATE：入会时间（办理会员卡的开始的时间）
-LOAD_TIME：观测窗口的结束时间（选取样本的时间宽度，距离现在最近的时间）
-FLIGHT_COUNT：飞行次数（频数）
-	SEG_KM_SUM：观测窗口总飞行公里数	
-	LAST_TO_END：最后一次乘机时间至观察窗口末端时长	
+FFP_DATE：入会时间（办理会员卡的开始的时间），
+LOAD_TIME：观测窗口的结束时间（选取样本的时间宽度，距离现在最近的时间），
+FLIGHT_COUNT：飞行次数（频数），
+	SEG_KM_SUM：观测窗口总飞行公里数，
+	LAST_TO_END：最后一次乘机时间至观察窗口末端时长，
 avg_discount：平均折扣率
 
 ### 3.2数据预处理
 * 分析是否有空值，若有空值数据较少，针对现有样本可对有空值数据进行剔除
 
 * 'FFP_DATE','LOAD_TIME'属性均为object，将其进行转换得到指标
-  L=FFP_DATE-LOAD_TIME
+  L=FFP_DATE-LOAD_TIME，
   其他属性则对应指标
-  R=LAST_TO_END
-  F=FLIGHT_COUNT
-  M=SEG_KM_SUM
+  R=LAST_TO_END，
+  F=FLIGHT_COUNT，
+  M=SEG_KM_SUM，
   C=AVG_DISCOUNT
 
 * 对各属性数据做归一化
