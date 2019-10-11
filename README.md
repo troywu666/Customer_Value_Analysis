@@ -112,7 +112,7 @@ def gap(data,nrefs=20,maxclusters=15):
             refs[i]=pred.inertia_
         pred_once=KMeans(n_clusters=k,init='k-means++').fit(data)
         refs_once=pred_once.inertia_
-        gap=np.mean(np.log(refs))-refs_once
+        gap=np.mean(np.log(refs))-np.log(refs_once)
         resultdf.append({'clusterCount':k,'gap':gap},ignore_index=True)
     return resultdf['gap'].values.argmax()+1,resultdf
 gap(data_clean_norm,maxclusters=15)
